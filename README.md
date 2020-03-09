@@ -1,17 +1,104 @@
+![Syslog Structured Data](Essential-Diagnostics-64.png)
+
 # Syslog Structured Data
 
-Logging element for .NET that will render as syslog RFC 5424 structured data.
+Logging element for .NET that will render as syslog RFC 5424 structured data, for use in Microsoft.Extensions.Logging and other log systems.
 
 ## Getting started
 
+To use the Syslog `StructuredData` component, install the nuget package:
 
+```powershell
+dotnet add package Syslog.StructuredData
+```
 
+You can then use the structured data via `BeginScope()` on an `ILogger`: 
+
+```c#
+using (_logger.BeginScope(new StructuredData
+{
+    ["CustomerId"] = customerId, ["OrderId"] = orderId, ["DueDate"] = dueDate
+}))
+{
+    // ...
+}
+```
+
+For default logger providers, that don't understand structured data, the `ToString()` method on the `StructuredData` object will render out the data in RFC 5424 format. This format can still be easily parsed by log analyzers, although the surrounding context won't be a syslog message.
+
+**Example output: Using the default console logger, with scopes and timestamp**
+
+![Default console example](docs/example-defaultconsole.png)
+
+For logger providers that do understand structured data, the `StructuredData` class implements the `IEnumerable<KeyValuePair<string, object>>` interface, allowing individual structured parameters to be extracted and logged as individual fields.
+
+For data with a specified SD-ID the value is prefixed to the parameter names, e.g. "origin:ip". 
+
+**Example output: Using Seq** 
+
+![Seq server example](docs/example-seq.png)
+
+The `StructuredData` class supports collection initializers for the parameter values, which can be used at the same time as the `Id` property initializer for a compact representation.
+
+```c#
+using (_logger.BeginScope(new StructuredData
+{
+    Id = "origin", ["ip"] = ipAddress
+}))
+{
+    // ...
+}
+```
+
+TODO: Overloads on BeginScope
+
+## Examples
+
+Examples are provided in the latest version, e.g. netcoreapp3.1.
+
+These can easily be run from the command line:
+
+```powershell
+dotnet run --project ./examples/DefaultConsoleLogging
+```
+
+Or using the console 'Systemd' format:
+
+```powershell
+dotnet run --project ./examples/SyslogLogging
+```
+
+**Example output: Console 'Systemd' format** 
+
+![Systemd console example](docs/example-syslogconsole.png)
+
+For the Seq example, you need to be running Seq. e.g. install on Windows, or on Linux open a terminal and run a docker image:
+
+```powershell
+sudo docker run -e ACCEPT_EULA=Y -p 5341:80 datalust/seq:latest
+```
+
+Then in another console, run the Seq example:
+
+```powershell
+dotnet run --project ./examples/SeqLogging
+```
 
 
 ## Development
 
+The `StructuredData` class is available from .NET Standard 1.0 or higher. It runs across all platforms where .NET is supported. You need the dotnet SDK for development.
 
 
+### Packaging
+
+To create a local package, run the following. You will then need to update the references in the examples.
+
+```powershell
+dotnet pack src/Syslog.StructuredData --output pack
+```
+
+Versioning uses GitVersion, based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
 
 ## License
 

@@ -27,7 +27,6 @@ namespace Syslog
         public StructuredData()
             : this(string.Empty, new KeyValuePair<string, object>[0])
         {
-            
         }
 
         /// <summary>
