@@ -110,6 +110,15 @@ dotnet pack src/Syslog.StructuredData --output pack
 Versioning uses GitVersion, based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
 
 
+### To do list
+
+* Add StructuredDataExtensions for ToFormattedLogValues(), that builds an RFC 5424 `format` (including prefixed names; note that simple values will work but complex ones, e.g. strings with invalid characters, won't be escaped correctly), and FromFormattedLogValues(), that will extract values (and look for SD-ID, and remove any prefixes).
+
+* Add support for customFormat string, for better compatibility with FormattedLogValues, and use that in the default ToString(), i.e. an explicit override. Also provide an overload (IFormattable?) that forces RFC 5424 format.
+
+* BeginScope overloads with customformat string.
+
+
 ## License
 
 Copyright (C) 2020 Gryphon Technology Pty Ltd
