@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Examples;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace SyslogConsole
+namespace ExtensionsLogging
 {
     public class Program
     {
@@ -18,7 +17,7 @@ namespace SyslogConsole
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<Worker>();
+                    services.AddHostedService<ExtensionsWorker>();
                 });
 
         public static async Task Main(string[] args)

@@ -11,7 +11,7 @@ namespace Syslog
     /// </summary>
     public class StructuredData : IStructuredData
     {
-        public const string IdProperty = "SD-ID";
+        public const string IdKey = "SD-ID";
 
         // Internally use ordered dictionary, to preserve the order passed in
         private OrderedDictionary<string, object>? _allProperties;
@@ -49,20 +49,31 @@ namespace Syslog
             _baseParameters = new OrderedDictionary<string, object>(parameters);
         }
 
+        int IReadOnlyCollection<KeyValuePair<string, object>>.Count
+        {
+            get
+            {
+                EnsureAllProperties();
+                return _allProperties!.Count;
+            }
+        }
+
         /// <summary>
         /// Gets the ID of the structured data set
         /// </summary>
-        public string Id {
+        public string Id
+        {
             get
             {
-                return _id; 
+                return _id;
             }
             [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
             set
             {
                 if (_allProperties != null)
                 {
-                    throw new InvalidOperationException("Properties should not be added after the initial construction.");
+                    throw new InvalidOperationException(
+                        "Properties should not be added after the initial construction.");
                 }
 
                 _id = value;
@@ -91,6 +102,15 @@ namespace Syslog
             set
             {
                 Add(key, value);
+            }
+        }
+
+        KeyValuePair<string, object> IReadOnlyList<KeyValuePair<string, object>>.this[int index]
+        {
+            get
+            {
+                EnsureAllProperties();
+                return _allProperties![index];
             }
         }
 
@@ -138,13 +158,13 @@ namespace Syslog
 
                 if (!string.IsNullOrEmpty(_id))
                 {
-                    ((IDictionary<string, object>)allProperties)[IdProperty] = _id;
+                    ((IDictionary<string, object>)allProperties)[IdKey] = _id;
                 }
 
                 _allProperties = allProperties;
             }
         }
-        
+
         private void EnsureToString()
         {
             if (_toString == null)

@@ -22,7 +22,8 @@ namespace Syslog.Tests
             IStructuredData data = new StructuredData(properties);
             var actual = data.ToString();
 
-            actual.ShouldBe("[- a=\"('x','System.Collections.ArrayList')\" b=\"{M='y' N=(1,'A')}\" c=\"(P='z' Q=(1,'A'))\"]");
+            actual.ShouldBe(
+                "[- a=\"('x','System.Collections.ArrayList')\" b=\"{M='y' N=(1,'A')}\" c=\"(P='z' Q=(1,'A'))\"]");
         }
 
         [TestMethod()]
@@ -55,7 +56,8 @@ namespace Syslog.Tests
             IStructuredData data = new StructuredData(properties);
             var actual = data.ToString();
 
-            actual.ShouldBe("[- a=\"(X=2 Z='System.Collections.Generic.Dictionary`2[System.String,System.Object\\]')\"]");
+            actual.ShouldBe(
+                "[- a=\"(X=2 Z='System.Collections.Generic.Dictionary`2[System.String,System.Object\\]')\"]");
         }
 
         [TestMethod()]

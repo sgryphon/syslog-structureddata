@@ -275,6 +275,7 @@ namespace Syslog
             {
                 WriteName(name, output);
             }
+
             output.Write("=\"");
             if (name.StartsWith("@"))
             {

@@ -2,7 +2,7 @@
 
 namespace Syslog
 {
-    public interface IStructuredData : IEnumerable<KeyValuePair<string, object>>
+    public interface IStructuredData : IReadOnlyList<KeyValuePair<string, object>>
     {
         string Id { get; }
         IReadOnlyDictionary<string, object> Parameters { get; }

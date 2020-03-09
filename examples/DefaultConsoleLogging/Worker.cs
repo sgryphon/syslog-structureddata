@@ -1,13 +1,12 @@
 using System;
 using System.Net;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Syslog;
 
-namespace DefaultConsoleLogging
+namespace Examples
 {
     public class Worker : BackgroundService
     {
@@ -26,11 +25,8 @@ namespace DefaultConsoleLogging
             var dueDate = new DateTime(2020, 1, 2);
             var total = 100;
             var rate = 0;
-            
-            using (_logger.BeginScope(new StructuredData
-            {
-                Id = "origin", ["ip"] = ipAddress
-            }))
+
+            using (_logger.BeginScope(new StructuredData {Id = "origin", ["ip"] = ipAddress}))
             {
                 try
                 {
@@ -41,7 +37,7 @@ namespace DefaultConsoleLogging
                     {
                         for (var i = 0; i < 4; i++)
                         {
-                            await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken).ConfigureAwait(false);
+                            await Task.Delay(TimeSpan.FromMilliseconds(1000), stoppingToken).ConfigureAwait(false);
                             Log.ProcessOrderItem(_logger, Guid.NewGuid(), null);
                         }
 

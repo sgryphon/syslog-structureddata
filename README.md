@@ -30,9 +30,9 @@ For default logger providers, that don't understand structured data, the `ToStri
 
 ![Default console example](docs/example-defaultconsole.png)
 
-For logger providers that do understand structured data, the `StructuredData` class implements the `IEnumerable<KeyValuePair<string, object>>` interface, allowing individual structured parameters to be extracted and logged as individual fields.
+For logger providers that do understand structured data, the `StructuredData` class implements the `IReadOnlyList<KeyValuePair<string, object>>` interface to be compatible with `FormattedLogValues`, allowing individual structured parameters to be extracted and logged as individual fields.
 
-For data with a specified SD-ID the value is prefixed to the parameter names, e.g. "origin:ip". 
+For data with a specified SD-ID the value is prefixed to the parameter names, e.g. "origin:ip", and the SD-ID value is included with the name `StructuredData.IdKey` ("SD-ID").
 
 **Example output: Using Seq** 
 
@@ -50,7 +50,16 @@ using (_logger.BeginScope(new StructuredData
 }
 ```
 
-TODO: Overloads on BeginScope
+An overload of `BeginScope()` extension method is also provided:
+
+```c#
+            using (_logger.BeginScope("userevent@-",
+                new Dictionary<string, object> {["UserId"] = userId, ["EventId"] = eventId}))
+            {
+    // ...
+}
+```
+
 
 ## Examples
 
@@ -87,7 +96,7 @@ dotnet run --project ./examples/SeqLogging
 
 ## Development
 
-The `StructuredData` class is available from .NET Standard 1.0 or higher. It runs across all platforms where .NET is supported. You need the dotnet SDK for development.
+The `StructuredData` class is available from .NET Standard 1.1 or higher. It runs across all platforms where .NET is supported. You need the dotnet SDK for development.
 
 
 ### Packaging
@@ -99,6 +108,7 @@ dotnet pack src/Syslog.StructuredData --output pack
 ```
 
 Versioning uses GitVersion, based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
+
 
 ## License
 
