@@ -18,7 +18,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/sgryphon/syslog-structureddata</PackageProjectUrl>
-    <PackageIcon>Essential-Diagnostics-64.png</PackageIcon>
+    <PackageIcon>diagnostics-logo-64.png</PackageIcon>
     <PackageTags>Logging;Tracing;Diagnostics;Log;Trace;Structured Data;syslog</PackageTags>
   </PropertyGroup>
 
@@ -30,6 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Essential-Diagnostics-64.png" Pack="true" PackagePath="\" />
+    <None Include="../../docs/diagnostics-logo-64.png" Link="diagnostics-logo-64.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

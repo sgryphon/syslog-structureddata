@@ -1,4 +1,4 @@
-![Syslog Structured Data](Essential-Diagnostics-64.png)
+![Syslog Structured Data](docs/diagnostics-logo-64.png)
 
 # Syslog Structured Data
 
