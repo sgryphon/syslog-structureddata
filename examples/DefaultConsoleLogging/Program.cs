@@ -31,7 +31,7 @@ namespace DefaultConsoleLogging
             await CreateHostBuilder(args).Build().RunAsync();
         }
     }
-    
+
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
@@ -46,7 +46,7 @@ namespace DefaultConsoleLogging
             await Task.Run(() =>
             {
                 using (_logger.BeginScope(new StructuredData("example@32473",
-                    new Dictionary<string, object> {["id"] = 5, ["name"] = "cafe", ["x"] = DateTimeOffset.Now })))
+                    new Dictionary<string, object> {["id"] = 5, ["name"] = "cafe", ["x"] = DateTimeOffset.Now})))
                 {
                     using (_logger.BeginScope(new StructuredData(new Dictionary<string, object>
                     {
@@ -59,7 +59,7 @@ namespace DefaultConsoleLogging
             }, stoppingToken).ConfigureAwait(true);
         }
     }
-    
+
     internal static class Log
     {
         public static readonly Action<ILogger, Guid, Exception?> WorkerExecuted =

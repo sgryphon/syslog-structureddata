@@ -3,7 +3,10 @@ using System.Collections.ObjectModel;
 
 namespace Syslog.Collections
 {
-    class OrderedDictionary<TKey, TValue> : KeyedCollection<TKey, KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
+    internal class OrderedDictionary<TKey, TValue> :
+        KeyedCollection<TKey, KeyValuePair<TKey, TValue>>,
+        IDictionary<TKey, TValue>,
+        IReadOnlyDictionary<TKey, TValue>
     {
         public OrderedDictionary()
         {
@@ -14,6 +17,38 @@ namespace Syslog.Collections
             foreach (var kvp in keyValuePairs)
             {
                 Add(kvp);
+            }
+        }
+
+        public ICollection<TKey> Keys
+        {
+            get
+            {
+                var keys = new Collection<TKey>();
+                foreach (var item in this)
+                {
+                    keys.Add(item.Key);
+                }
+
+                return keys;
+            }
+        }
+
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                var values = new Collection<TValue>();
+                foreach (var item in this)
+                {
+                    values.Add(item.Value);
+                }
+
+                return values;
             }
         }
 
@@ -29,35 +64,12 @@ namespace Syslog.Collections
                 {
                     Remove(key);
                 }
+
                 Add(new KeyValuePair<TKey, TValue>(key, value));
             }
         }
 
-        public ICollection<TKey> Keys
-        {
-            get
-            {
-                var keys = new Collection<TKey>();
-                foreach (var item in this)
-                {
-                    keys.Add(item.Key);
-                }
-                return keys;
-            }
-        }
-
-        public ICollection<TValue> Values
-        {
-            get
-            {
-                var values = new Collection<TValue>();
-                foreach (var item in this)
-                {
-                    values.Add(item.Value);
-                }
-                return values;
-            }
-        }
+        TValue IReadOnlyDictionary<TKey, TValue>.this[TKey key] => this[key].Value;
 
         public void Add(TKey key, TValue value)
         {
@@ -67,6 +79,11 @@ namespace Syslog.Collections
         public bool ContainsKey(TKey key)
         {
             return Contains(key);
+        }
+
+        protected override TKey GetKeyForItem(KeyValuePair<TKey, TValue> item)
+        {
+            return item.Key;
         }
 
         public bool TryGetValue(TKey key, out TValue value)
@@ -79,11 +96,6 @@ namespace Syslog.Collections
 
             value = default;
             return false;
-        }
-
-        protected override TKey GetKeyForItem(KeyValuePair<TKey, TValue> item)
-        {
-            return item.Key;
         }
     }
 }
