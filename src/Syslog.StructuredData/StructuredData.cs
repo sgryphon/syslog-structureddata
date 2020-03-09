@@ -17,7 +17,7 @@ namespace Syslog.StructuredData
         // Internally use ordered dictionary, to preserve the order passed in
         private OrderedDictionary<string, object>? _allProperties;
         private readonly OrderedDictionary<string, object> _baseParameters;
-        private readonly string _id;
+        private string _id;
 
         private string? _toString;
 
@@ -28,6 +28,7 @@ namespace Syslog.StructuredData
         public StructuredData()
             : this(string.Empty, new KeyValuePair<string, object>[0])
         {
+            
         }
 
         /// <summary>
@@ -53,7 +54,22 @@ namespace Syslog.StructuredData
         /// <summary>
         /// Gets the ID of the structured data set
         /// </summary>
-        public string Id { get { return _id; } }
+        public string Id {
+            get
+            {
+                return _id; 
+            }
+            [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+            set
+            {
+                if (_allProperties != null)
+                {
+                    throw new InvalidOperationException("Properties should not be added after the initial construction.");
+                }
+
+                _id = value;
+            }
+        }
 
         /// <summary>
         /// Gets the parameters of the structured data

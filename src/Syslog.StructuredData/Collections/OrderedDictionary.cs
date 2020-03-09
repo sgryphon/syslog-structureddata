@@ -94,7 +94,7 @@ namespace Syslog.Collections
                 return true;
             }
 
-            value = default;
+            value = default!;
             return false;
         }
     }
