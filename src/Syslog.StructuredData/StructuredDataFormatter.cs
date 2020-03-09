@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Essential.Logging
+namespace Syslog
 {
     internal class StructuredDataFormatter
     {

@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Shouldly;
 
-namespace Syslog.StructuredData.Tests
+namespace Syslog.Tests
 {
     [TestClass]
     public class CustomObjectFormatterTests

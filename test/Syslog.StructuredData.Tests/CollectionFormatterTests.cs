@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
-namespace Syslog.StructuredData.Tests
+namespace Syslog.Tests
 {
     [TestClass]
     public class CollectionFormatterTests

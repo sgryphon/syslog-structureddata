@@ -2,10 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using Essential.Logging;
 using Syslog.Collections;
 
-namespace Syslog.StructuredData
+namespace Syslog
 {
     /// <summary>
     /// Holds structured data for logging as key-value properties

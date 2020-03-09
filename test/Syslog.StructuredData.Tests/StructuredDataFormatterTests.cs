@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using Shouldly;
+using Syslog;
 
-namespace Syslog.StructuredData.Tests
+namespace Syslog.Tests
 {
     [TestClass()]
-    public class StucturedDataFormatterTests
+    public class StructuredDataFormatterTests
     {
         [TestMethod()]
         public void StructuredEscapePropertyName()

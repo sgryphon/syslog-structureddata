@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Syslog.StructuredData
+namespace Syslog
 {
     public interface IStructuredData : IEnumerable<KeyValuePair<string, object>>
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Shouldly;
 
-namespace Syslog.StructuredData.Tests
+namespace Syslog.Tests
 {
     [TestClass]
     public class StructuredDataTests
