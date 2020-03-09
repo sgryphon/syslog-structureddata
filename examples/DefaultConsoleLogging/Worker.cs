@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -23,22 +24,33 @@ namespace DefaultConsoleLogging
             var customerId = 12345;
             var orderId = "PO-56789";
             var dueDate = new DateTime(2020, 1, 2);
+            var total = 100;
+            var rate = 0;
             
             using (_logger.BeginScope(new StructuredData
             {
                 Id = "origin", ["ip"] = ipAddress
             }))
             {
-                using (_logger.BeginScope(new StructuredData
+                try
                 {
-                    ["CustomerId"] = customerId, ["OrderId"] = orderId, ["DueDate"] = dueDate 
-                }))
-                {
-                    for (var i = 0; i < 4; i++)
+                    using (_logger.BeginScope(new StructuredData
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken).ConfigureAwait(false);
-                        Log.ProcessOrderItem(_logger, Guid.NewGuid(), null);
+                        ["CustomerId"] = customerId, ["OrderId"] = orderId, ["DueDate"] = dueDate
+                    }))
+                    {
+                        for (var i = 0; i < 4; i++)
+                        {
+                            await Task.Delay(TimeSpan.FromMilliseconds(500), stoppingToken).ConfigureAwait(false);
+                            Log.ProcessOrderItem(_logger, Guid.NewGuid(), null);
+                        }
+
+                        var points = total / rate;
                     }
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorProcessingCustomer(_logger, customerId, ex);
                 }
             }
         }

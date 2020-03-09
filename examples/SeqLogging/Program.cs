@@ -4,6 +4,7 @@ using DefaultConsoleLogging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace SeqLogging
 {
@@ -18,7 +19,7 @@ namespace SeqLogging
                 })
                 .ConfigureLogging((hostContext, loggingBuilder) =>
                 {
-                    //loggingBuilder.;
+                    loggingBuilder.AddSeq(hostContext.Configuration.GetSection("Logging:Seq"));
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
