@@ -96,8 +96,8 @@ Provided [examples](examples/):
 
 * Default consoler logger provider
 * Console logger with Systemd format
-* [Seq server](examples/SeqLogging/Readme.md)
-* [ELK stack](examples/ElkStack/Readme.md)
+* [Seq server](examples/SeqLogging)
+* [ELK stack](examples/ElkStack)
 * Example using the BeginScope() extension method
 
 ## Development
