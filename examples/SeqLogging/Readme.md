@@ -20,4 +20,14 @@ Then in another console, run the Seq example:
 dotnet run --project ./examples/SeqLogging
 ```
 
+Open a browser to the Seq web application:
 
+```
+http://localhost:5601
+```
+
+Individual structured data parameters are displayed in Seq, can be queried, etc: 
+
+**Example output: Using Seq** 
+
+![Seq server example](../../docs/example-seq.png)
