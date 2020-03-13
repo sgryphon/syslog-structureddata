@@ -6,7 +6,7 @@ Logging element for .NET that will render as syslog RFC 5424 structured data, fo
 
 ## Getting started
 
-To use the Syslog `StructuredData` component, install the nuget package:
+To use the Syslog `StructuredData` component, install the [Syslog.StructuredData nuget package](https://www.nuget.org/packages/Syslog.StructuredData):
 
 ```powershell
 dotnet add package Syslog.StructuredData
@@ -24,19 +24,30 @@ using (_logger.BeginScope(new StructuredData
 }
 ```
 
+### Output: basic logger providers
+
 For default logger providers, that don't understand structured data, the `ToString()` method on the `StructuredData` object will render out the data in RFC 5424 format. This format can still be easily parsed by log analyzers, although the surrounding context won't be a syslog message.
 
 **Example output: Using the default console logger, with scopes and timestamp**
 
 ![Default console example](docs/example-defaultconsole.png)
 
+### Output: loggers that support structured data
+
 For logger providers that do understand structured data, the `StructuredData` class implements the `IReadOnlyList<KeyValuePair<string, object>>` interface to be compatible with `FormattedLogValues`, allowing individual structured parameters to be extracted and logged as individual fields.
 
 For data with a specified SD-ID the value is prefixed to the parameter names, e.g. "origin:ip", and the SD-ID value is included with the name `StructuredData.IdKey` ("SD-ID").
 
+**Example output: Using Elasticsearch and Kibana** 
+
+![Kibana example](docs/example-kibana-serilog.png)
+
 **Example output: Using Seq** 
 
 ![Seq server example](docs/example-seq.png)
+
+
+### Other constructors and overloads
 
 The `StructuredData` class supports collection initializers for the parameter values, which can be used at the same time as the `Id` property initializer for a compact representation.
 
@@ -63,7 +74,7 @@ An overload of `BeginScope()` extension method is also provided:
 
 ## Examples
 
-Examples are provided in the latest version, e.g. netcoreapp3.1.
+Several examples are provided.
 
 These can easily be run from the command line:
 
@@ -81,18 +92,13 @@ dotnet run --project ./examples/SyslogLogging
 
 ![Systemd console example](docs/example-syslogconsole.png)
 
-For the Seq example, you need to be running Seq. e.g. install on Windows, or on Linux open a terminal and run a docker image:
+Provided [examples](examples/):
 
-```powershell
-sudo docker run -e ACCEPT_EULA=Y -p 5341:80 datalust/seq:latest
-```
-
-Then in another console, run the Seq example:
-
-```powershell
-dotnet run --project ./examples/SeqLogging
-```
-
+* Default consoler logger provider
+* Console logger with Systemd format
+* [Seq server](examples/SeqLogging/Readme.md)
+* [ELK stack](examples/ElkStack/Readme.md)
+* Example using the BeginScope() extension method
 
 ## Development
 
