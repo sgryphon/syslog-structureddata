@@ -4,6 +4,8 @@ using Examples;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace ElkStack
 {
@@ -15,6 +17,22 @@ namespace ElkStack
                 .ConfigureAppConfiguration((hostContext, configurationBuilder) =>
                 {
                     configurationBuilder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
+                })
+                .ConfigureLogging((hostContext, loggingBuilder) =>
+                {
+                    var nodeUri = hostContext.Configuration["Logging:Elasticsearch:Node"];
+                    var elasticsearchOptions = new ElasticsearchSinkOptions(new Uri(nodeUri))
+                    {
+                        AutoRegisterTemplate = true,
+                        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+                        IndexFormat = "serilog-{0:yyyy.MM.dd}",
+                    };
+                    Serilog.Log.Logger = new LoggerConfiguration()
+                        .Enrich.FromLogContext()
+                        .WriteTo.Elasticsearch(elasticsearchOptions)
+                        .CreateLogger();
+                    
+                    loggingBuilder.AddSerilog();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
