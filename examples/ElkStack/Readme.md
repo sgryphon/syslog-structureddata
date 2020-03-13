@@ -1,34 +1,14 @@
-## Elasticsearch-Logstask-Kibana (ELK) stack example
+## Elasticsearch-Kibana (ELK) stack example
 
-This example uses the GELF input for logstash to injest data.
+This example uses the Serilog provider for Microsoft.Extensions.Logging and Serilog sink to write directly to Elasticsearch (it doesn't use Logstash).
 
-You need to be running an ELK server, for example on Linux this can be run in a docker container.
+You need to be running an Elasticsearch and Kibana, for example on Linux a docker compose configuration is provided. There are a number of prerequesites that you will need to meet; the elk-docker project provides a good list, including some troubleshooting (see https://elk-docker.readthedocs.io/).
 
-This uses the image from the elk-docker project, sebp/elk (see https://github.com/spujadas/elk-docker).
-
-Note that you will need to ensure the prerequisites are met (see https://elk-docker.readthedocs.io/).
-
-To add the extra logstash input plugin you need to build a new image:
-
-```powershell
-sudo docker-compose -f examples/ElkStack/docker/docker-compose.yml build elk
-```
-
-Then, to run the image:
+The provided Docker compose will create two nodes, one for Elasticsearch, and one for Kibana:
 
 ```powershell
 sudo docker-compose -f examples/ElkStack/docker/docker-compose.yml up
 ```
-
-You can check the image is running by browsing to `http://localhost:5601`. Kibana should load, but won't show and dashboards until you get some data.
-
-* port 5601 - Kibana web interface
-* port 9200 - Elasticsearch JSON interface
-* port 9300 - Elasticsearch transport interface (not mapped)
-* port 5044 - Logstash beats interface
-* port 12201/udp - GELF input plugin
-
-You can stop the container with `^C`, and start it again with `sudo docker start elk`.
 
 Then in another console, run the ElkStack example:
 
@@ -36,9 +16,40 @@ Then in another console, run the ElkStack example:
 dotnet run --project ./examples/ElkStack
 ```
 
-### Running docker directly
+Open a browser to the Kibana application:
 
-If running docker directly (not via docker-compose):
+```
+http://localhost:5601
+```
+
+You will be prompted to create a new index pattern, based on the received messages (if it says there are no log messages, you need to troubleshoot the issue).
+
+Use the index pattern "serilog-*", which matches the events sent, use the time filter "@timestamp", and create the pattern.
+
+On the Discover tab, you will see your log messages, with all parameters logged as individual fields. 
+
+You can configure columns as needed, and search for specific fields (e.g. "fields.CustomerId: 12345").
+
+**Example output: Kibana (from Serilog)** 
+
+![Kibana example](../../docs/example-kibana-serilog.png)
+
+You can stop the container with `^C`. You can start it again, running in the background, with:
+
+```powershell
+sudo docker-compose -f examples/ElkStack/docker/docker-compose.yml start
+```
+
+### Other options for the ELK stack
+
+The provided docker-compose file uses the open source images directly from Elastic, running one Elasticsearch node and one Kibana node, exposing the following ports:
+
+* port 5601 - Kibana web interface
+* port 9200 - Elasticsearch JSON interface
+
+There is also a single contain ELK stack image, sebb/elk that can be used (https://elk-docker.readthedocs.io/)
+
+This can also be run via docker compose, or directly:
 
 ```powershell
 sudo docker pull sebp/elk
