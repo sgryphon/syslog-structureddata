@@ -164,8 +164,15 @@ namespace Syslog
         /// </remarks>
         public static string Format(IEnumerable<KeyValuePair<string, object>> values)
         {
-            GetIdAndParametersFromList(values, out var id, out var parameters);
-            return Format(id, parameters);
+            if (values is IStructuredData structuredData)
+            {
+                return Format(structuredData.Id, structuredData.Parameters);
+            }
+            else
+            {
+                GetIdAndParametersFromList(values, out var id, out var parameters);
+                return Format(id, parameters);
+            }
         }
 
         /// <summary>
@@ -195,10 +202,17 @@ namespace Syslog
         /// two keys "b" and "c".
         /// </para>
         /// </remarks>
-        public static StructuredData From(IEnumerable<KeyValuePair<string, object>> values)
+        public static IStructuredData From(IEnumerable<KeyValuePair<string, object>> values)
         {
-            GetIdAndParametersFromList(values, out var id, out var parameters);
-            return new StructuredData(id, parameters);
+            if (values is IStructuredData structuredData)
+            {
+                return structuredData;
+            }
+            else
+            {
+                GetIdAndParametersFromList(values, out var id, out var parameters);
+                return new StructuredData(id, parameters);
+            }
         }
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
