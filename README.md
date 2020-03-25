@@ -104,25 +104,24 @@ Provided [examples](examples/):
 
 The `StructuredData` class is available from .NET Standard 1.1 or higher. It runs across all platforms where .NET is supported. You need the dotnet SDK for development.
 
+To check the project builds and run the unit tests:
+
+```powershell
+dotnet test --verbosity normal
+```
 
 ### Packaging
 
-To create a local package, run the following. You will then need to update the references in the examples.
+To create a local package, a PowerShell build script is provided that generates a version number then builds. You will then need to update the references in the examples.
 
 ```powershell
-dotnet pack src/Syslog.StructuredData --output pack
+./build.ps1
 ```
 
-Versioning uses GitVersion, based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
+Versioning uses GitVersion.Tool (as a dotnet local tool), based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
 
 
 ### To do list
-
-* Provide a formatter for FormattedLogValues / IReadOnlyList<KeyValuePair<string, object>> that will extract parameters, look for SD-ID, remove any prefixes, and render RFC 5424 format. Needed to support other scope values (can also provide an overload that wraps an object to [- scope="..."])
-
-* Add StructuredDataExtensions for FromFormattedLogValues(), to basically do as above.
-
-* Add StructuredDataExtensions for ToFormattedLogValues(), that builds an RFC 5424 `format` (including prefixed names; note that simple values will work but complex ones, e.g. strings with invalid characters, won't be escaped correctly).
 
 * Add support for customFormat string, for better compatibility with FormattedLogValues, and use that in the default ToString(), i.e. an explicit override. Also provide an overload (IFormattable?) that forces RFC 5424 format.
 
