@@ -118,12 +118,6 @@ Versioning uses GitVersion, based on the git branch, using Mainline mode; if you
 
 ### To do list
 
-* Provide a formatter for FormattedLogValues / IReadOnlyList<KeyValuePair<string, object>> that will extract parameters, look for SD-ID, remove any prefixes, and render RFC 5424 format. Needed to support other scope values (can also provide an overload that wraps an object to [- scope="..."])
-
-* Add StructuredDataExtensions for FromFormattedLogValues(), to basically do as above.
-
-* Add StructuredDataExtensions for ToFormattedLogValues(), that builds an RFC 5424 `format` (including prefixed names; note that simple values will work but complex ones, e.g. strings with invalid characters, won't be escaped correctly).
-
 * Add support for customFormat string, for better compatibility with FormattedLogValues, and use that in the default ToString(), i.e. an explicit override. Also provide an overload (IFormattable?) that forces RFC 5424 format.
 
 * BeginScope overloads with customformat string.
