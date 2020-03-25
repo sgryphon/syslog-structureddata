@@ -104,16 +104,21 @@ Provided [examples](examples/):
 
 The `StructuredData` class is available from .NET Standard 1.1 or higher. It runs across all platforms where .NET is supported. You need the dotnet SDK for development.
 
+To check the project builds and run the unit tests:
+
+```powershell
+dotnet test --verbosity normal
+```
 
 ### Packaging
 
-To create a local package, run the following. You will then need to update the references in the examples.
+To create a local package, a PowerShell build script is provided that generates a version number then builds. You will then need to update the references in the examples.
 
 ```powershell
-dotnet pack src/Syslog.StructuredData --output pack
+./build.ps1
 ```
 
-Versioning uses GitVersion, based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
+Versioning uses GitVersion.Tool (as a dotnet local tool), based on the git branch, using Mainline mode; if you are testing multiple local versions you may need to clean your nuget cache to ensure you are referencing the latest build.
 
 
 ### To do list
