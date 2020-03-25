@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 
-namespace Syslog.Tests
+namespace Syslog.Test
 {
     [TestClass]
     public class StructuredDataTests

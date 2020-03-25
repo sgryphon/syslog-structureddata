@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syslog.StructuredData", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{200EAF36-3BDE-4680-96E6-8EB8DABD2117}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syslog.StructuredData.Tests", "test\Syslog.StructuredData.Tests\Syslog.StructuredData.Tests.csproj", "{015E371C-86D1-4AA4-AB15-AB9DD0D58269}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syslog.StructuredData.Test", "test\Syslog.StructuredData.Test\Syslog.StructuredData.Test.csproj", "{015E371C-86D1-4AA4-AB15-AB9DD0D58269}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{7CFF66B2-6FF3-448C-8409-DC052F463B0A}"
 EndProject

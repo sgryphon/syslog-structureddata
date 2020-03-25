@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Syslog.Collections;
 
 namespace Syslog
@@ -12,6 +13,7 @@ namespace Syslog
     public class StructuredData : IStructuredData
     {
         public const string IdKey = "SD-ID";
+        public const string IdPrefixSeparator = ":";
 
         // Internally use ordered dictionary, to preserve the order passed in
         private OrderedDictionary<string, object>? _allProperties;
@@ -131,12 +133,83 @@ namespace Syslog
             _baseParameters.Add(key, value!);
         }
 
+        /// <summary>
+        /// Formats the ID and Parameter values of the provided IStructuredData in RFC 5424 format, e.g. [sd-id param1="value1" param2="value2"]
+        /// </summary>
+        public static string Format(IStructuredData structuredData)
+        {
+            return Format(structuredData.Id, structuredData.Parameters);
+        }
+
+        /// <summary>
+        /// Formats the provided ID and Parameter values as RFC 5424 structured data, e.g. [sd-id param1="value1" param2="value2"]
+        /// </summary>
+        /// <param name="id">The structured data ID (name); RFC 5424 specifies the format 'name@private-enterprise-number' for custom values.</param>
+        /// <param name="parameters">The key-value parameters to trace</param>
+        public static string Format(string id, IEnumerable<KeyValuePair<string, object>> parameters)
+        {
+            var writer = new StringWriter();
+            StructuredDataFormatter.FormatStructuredData(id, parameters, writer);
+            return writer.GetStringBuilder().ToString();
+        }
+
+        /// <summary>
+        /// Extracts "SD-ID" as the structured data ID, removes corresponding prefixes from other keys, then formats as RFC 5424 structured data.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// For example, if the values contain { ["SD-ID"] = "a", ["a:b"] = 1, ["c"] = "x" }, then the ID is "a",
+        /// and the second key becomes "b" to give a formatted result of [a b="1" c="x"].
+        /// </para>
+        /// </remarks>
+        public static string Format(IEnumerable<KeyValuePair<string, object>> values)
+        {
+            GetIdAndParametersFromList(values, out var id, out var parameters);
+            return Format(id, parameters);
+        }
+
+        /// <summary>
+        /// Formats a single parameter name and value in RFC 5424 format, with an empty ID, e.g. [- paramName="parameterValue"]
+        /// </summary>
+        public static string Format(string parameterName, object parameterValue)
+        {
+            return Format(string.Empty, parameterName, parameterValue);
+        }
+
+        /// <summary>
+        /// Formats the ID and a single parameter name and value in RFC 5424 format, e.g. [id paramName="parameterValue"]
+        /// </summary>
+        public static string Format(string id, string parameterName, object parameterValue)
+        {
+            var parameters = new[] {new KeyValuePair<string, object>(parameterName, parameterValue)};
+            return Format(id, parameters);
+        }
+
+        /// <summary>
+        /// Creates a StructuredData by extracting any "SD-ID" as the ID, and removing the corresponding prefix from other keys.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// For example, if the values contain { ["SD-ID"] = "a", ["a:b"] = 1, ["c"] = "x" }, then the ID is "a",
+        /// and the second key becomes "b" to give a StructuredData object with Id = "a", and Parameters containing
+        /// two keys "b" and "c".
+        /// </para>
+        /// </remarks>
+        public static StructuredData From(IEnumerable<KeyValuePair<string, object>> values)
+        {
+            GetIdAndParametersFromList(values, out var id, out var parameters);
+            return new StructuredData(id, parameters);
+        }
+
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
             EnsureAllProperties();
             return _allProperties!.GetEnumerator();
         }
 
+        /// <summary>
+        /// Formats the structured data in RFC 5424 format, e.g. [sd-id param1="value1" param2="value2"]
+        /// </summary>
         public override string ToString()
         {
             EnsureToString();
@@ -150,7 +223,7 @@ namespace Syslog
                 var allProperties = new OrderedDictionary<string, object>();
 
                 // Start with base properties, with keys prefixed by the SD-ID
-                var prefix = string.IsNullOrWhiteSpace(_id) ? string.Empty : _id + ":";
+                var prefix = string.IsNullOrWhiteSpace(_id) ? string.Empty : _id + IdPrefixSeparator;
                 foreach (var kvp in _baseParameters)
                 {
                     allProperties.Add(prefix + kvp.Key, kvp.Value);
@@ -170,17 +243,39 @@ namespace Syslog
             if (_toString == null)
             {
                 //EnsureMessageTemplate();
-                EnsureAllProperties();
 
-                var writer = new StringWriter();
-                StructuredDataFormatter.FormatStructuredData(_id, _baseParameters, writer);
-                _toString = writer.GetStringBuilder().ToString();
+                EnsureAllProperties(); // Although _allProperties isn't needed, this locks the object and prevents further setters
+                _toString = Format(this);
             }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private static void GetIdAndParametersFromList(IEnumerable<KeyValuePair<string, object>> values, out string id,
+            out IEnumerable<KeyValuePair<string, object>> parameters)
+        {
+            id = values.Where(kvp => string.Equals(kvp.Key, IdKey, StringComparison.OrdinalIgnoreCase))
+                     .Select(kvp => kvp.Value.ToString())
+                     .SingleOrDefault()
+                 ?? string.Empty;
+
+            var prefix = string.IsNullOrWhiteSpace(id) ? string.Empty : id + IdPrefixSeparator;
+
+            parameters = values.Where(kvp => !string.Equals(kvp.Key, IdKey, StringComparison.OrdinalIgnoreCase))
+                .Select(kvp =>
+                {
+                    if (prefix != string.Empty && kvp.Key.StartsWith(prefix))
+                    {
+                        return new KeyValuePair<string, object>(kvp.Key.Substring(prefix.Length), kvp.Value);
+                    }
+                    else
+                    {
+                        return kvp;
+                    }
+                });
         }
     }
 }
